@@ -5,7 +5,6 @@ spacy project assets
 ```
 It uses `project.yml` file and download the data from UD GitHub repository.
 
-
 ### Download vectors
 Download fasttext vectors
 ```shell
@@ -14,6 +13,7 @@ wget https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ur.300.vec.gz
 
 Use these vectors to prune it so that model size is reduced. I'm currently using 100000 vectors for training the model.
 ```shell
+mkdir vectors
 python -m spacy init vectors ur cc.ur.300.vec.gz  ./vectors --truncate 100000 --name ur_model.vectors
 ```
 
