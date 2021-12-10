@@ -24,3 +24,12 @@ spacy project run all
 ```
 
 It will train the tagger and parser model on cpu. You can specify gpu in `project.yml` file.
+
+### Install the model
+After training, you can install and use the model.
+
+```shell
+pip install ur_model-0.0.0.tar.gz 
+```
+
+There is a script `test.py` on how to use the model.
