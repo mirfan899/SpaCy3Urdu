@@ -1,0 +1,75 @@
+preprocess:
+  cmd: python -m spacy run preprocess
+  script:
+    - mkdir -p corpus/UD_Urdu-UDTB
+    - python -m spacy convert assets/UD_Urdu-UDTB/ur_udtb-ud-train.conllu corpus/UD_Urdu-UDTB/
+      --converter conllu --n-sents 10 --merge-subtokens
+    - python -m spacy convert assets/UD_Urdu-UDTB/ur_udtb-ud-dev.conllu corpus/UD_Urdu-UDTB/
+      --converter conllu --n-sents 10 --merge-subtokens
+    - python -m spacy convert assets/UD_Urdu-UDTB/ur_udtb-ud-test.conllu corpus/UD_Urdu-UDTB/
+      --converter conllu --n-sents 10 --merge-subtokens
+    - mv corpus/UD_Urdu-UDTB/ur_udtb-ud-train.spacy corpus/UD_Urdu-UDTB/train.spacy
+    - mv corpus/UD_Urdu-UDTB/ur_udtb-ud-dev.spacy corpus/UD_Urdu-UDTB/dev.spacy
+    - mv corpus/UD_Urdu-UDTB/ur_udtb-ud-test.spacy corpus/UD_Urdu-UDTB/test.spacy
+  deps:
+    - path: assets/UD_Urdu-UDTB/ur_udtb-ud-train.conllu
+      md5: 7b335da59345688446bc8611e01dffbb
+    - path: assets/UD_Urdu-UDTB/ur_udtb-ud-dev.conllu
+      md5: f3766d303b7c38c0b20e11e9cbd42471
+    - path: assets/UD_Urdu-UDTB/ur_udtb-ud-test.conllu
+      md5: a393a06ec504ec9ab12183dd54b53ee5
+  outs:
+    - path: corpus/UD_Urdu-UDTB/train.spacy
+      md5: 8d06fafdb995f91c93c9a7f07bec6aa5
+    - path: corpus/UD_Urdu-UDTB/dev.spacy
+      md5: e4fb0a41064baf59ea2ad0eba107aa54
+    - path: corpus/UD_Urdu-UDTB/test.spacy
+      md5: c9e8adbda6ce29580f2a6ee291b77b14
+  spacy_version: 3.2.1
+  spacy_git_version: 800737b41
+train:
+  cmd: python -m spacy run train
+  script:
+    - python -m spacy train configs/default.cfg --output training/UD_Urdu-UDTB --gpu-id
+      -1 --paths.train corpus/UD_Urdu-UDTB/train.spacy --paths.dev corpus/UD_Urdu-UDTB/dev.spacy
+      --nlp.lang=en
+  deps:
+    - path: corpus/UD_Urdu-UDTB/train.spacy
+      md5: 8d06fafdb995f91c93c9a7f07bec6aa5
+    - path: corpus/UD_Urdu-UDTB/dev.spacy
+      md5: e4fb0a41064baf59ea2ad0eba107aa54
+    - path: configs/default.cfg
+      md5: ce0f885c8a59e2c25dfa38a48a5e89a2
+  outs:
+    - path: training/UD_Urdu-UDTB/model-best
+      md5: dc1e1a8f36e36392bfb5ed0eb28b3693
+  spacy_version: 3.2.1
+  spacy_git_version: 800737b41
+evaluate:
+  cmd: python -m spacy run evaluate
+  script:
+    - python -m spacy evaluate ./training/UD_Urdu-UDTB/model-best ./corpus/UD_Urdu-UDTB/test.spacy
+      --output ./metrics/UD_Urdu-UDTB.json --gpu-id -1
+  deps:
+    - path: training/UD_Urdu-UDTB/model-best
+      md5: dc1e1a8f36e36392bfb5ed0eb28b3693
+    - path: corpus/UD_Urdu-UDTB/test.spacy
+      md5: c9e8adbda6ce29580f2a6ee291b77b14
+  outs:
+    - path: metrics/UD_Urdu-UDTB.json
+      md5: 247b1ed0ef6501c526976587cc39a73b
+  spacy_version: 3.2.1
+  spacy_git_version: 800737b41
+package:
+  cmd: python -m spacy run package
+  script:
+    - python -m spacy package training/UD_Urdu-UDTB/model-best packages --name ud_ur
+      --version 0.0.0 --force
+  deps:
+    - path: training/UD_Urdu-UDTB/model-best
+      md5: dc1e1a8f36e36392bfb5ed0eb28b3693
+  outs:
+    - path: packages/en_ud_ur-0.0.0/dist/en_ud_ur-0.0.0.tar.gz
+      md5: 7b4740db2fde000e1509aa24c551ad6a
+  spacy_version: 3.2.1
+  spacy_git_version: 800737b41
