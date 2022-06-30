@@ -33,3 +33,44 @@ pip install ur_model-0.0.0.tar.gz
 ```
 
 There is a script `test.py` on how to use the model.
+
+
+### Spacy 3.3
+Train two models i.e. one for tagger, parser etc and second for ner.
+To train tagger and parser run
+```shell
+spacy project assets
+spacy project run all
+```
+Train ner model
+```shell
+spacy train configs/config.cfg --output ./ner3 --paths.train corpus/train.spacy --paths.dev corpus/dev.spacy
+```
+
+
+Install both models
+```shell
+pip install location/ur_model.xxxx.tar.gz
+pip install location/ur_ner.xxxx.tar.gz
+```
+Now Merge two trained models.
+```shell
+python merge_tp2ner.py
+```
+
+Now uninstall these models
+```shell
+pip uninstall ur_model
+pip uninstall ur_ner
+```
+
+Now package merged model
+```shell
+# create packages directory if get error
+spacy package ur_ner packages --name "ner" --version "0.0.0" --force
+```
+
+Now install it
+```shell
+pip install location/ur_ner.xxx.tar.gz
+```

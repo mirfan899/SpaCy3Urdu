@@ -1,5 +1,5 @@
 import spacy
-nlp = spacy.load("ur_model")
+nlp = spacy.load("ur_model", exclude="ner")
 # nlp.remove_pipe("ner")
 print(nlp.pipe_names)  # ['tagger', 'parser']
 
