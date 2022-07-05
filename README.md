@@ -17,6 +17,26 @@ mkdir vectors
 python -m spacy init vectors ur cc.ur.300.vec.gz  ./vectors --truncate 100000 --name ur_model.vectors
 ```
 
+### Preprocessing
+Replace Other with O to train a better model.
+```shell
+sed -i 's/Other/O/g' ner/100000.txt 
+```
+
+convert tsv to json
+```shell
+python tsv_to_json.py
+```
+Now convert json to spacy pickle format.
+```shell
+python json_to_spacy.py -i ner/urdu_ner_dataset.json -o ner/urdu_ner_dataset.txt
+```
+
+Now convert to spacy .spacy binray format.
+
+```shell
+python json2spacy3.3.py
+```
 ### Train the model
 Now run the command to train the tagger and parser for Urdu language.
 ```shell
@@ -36,6 +56,12 @@ There is a script `test.py` on how to use the model.
 
 
 ### Spacy 3.3
+Create config.cfg from base_config.cfg
+
+```shell
+python -m spacy init fill-config base_config.cfg config.cfg
+```
+
 Train two models i.e. one for tagger, parser etc and second for ner.
 To train tagger and parser run
 ```shell

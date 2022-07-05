@@ -24,7 +24,7 @@ def main(input_file=None, output_file=None):
                     labels = [labels]
 
                 for label in labels:
-                    entities.append((point['start'], point['end'] + 1, label))
+                    entities.append((point['start'], point['end'], label))
 
             training_data.append((text, {"entities": entities}))
 

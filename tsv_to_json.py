@@ -13,7 +13,7 @@ def tsv_to_json_format(input_path, output_path, unknown_label):
         s = ''
         start = 0
         for line in f:
-            if line[0:len(line) - 1] != 'ہے\tOther':
+            if line[0:len(line) - 1] != 'ہے\tO':
                 print(line)
                 word, entity = line.split('\t')
                 s += word + " "
@@ -23,7 +23,7 @@ def tsv_to_json_format(input_path, output_path, unknown_label):
                         d = {}
                         d['text'] = word
                         d['start'] = start
-                        d['end'] = start + len(word) - 1
+                        d['end'] = start + len(word)
                         try:
                             label_dict[entity].append(d)
                         except:
@@ -31,7 +31,7 @@ def tsv_to_json_format(input_path, output_path, unknown_label):
                             label_dict[entity].append(d)
                 start += len(word) + 1
             else:
-                data_dict['content'] = s
+                data_dict['content'] = s.strip()
                 s = ''
                 label_list = []
                 for ents in list(label_dict.keys()):
@@ -42,7 +42,7 @@ def tsv_to_json_format(input_path, output_path, unknown_label):
                                 if (label_dict[ents][i]['text'] == label_dict[ents][j]['text']):
                                     di = {}
                                     di['start'] = label_dict[ents][j]['start']
-                                    di['end'] = label_dict[ents][j]['end']
+                                    di['end'] = label_dict[ents][j]['end']+1
                                     di['text'] = label_dict[ents][i]['text']
                                     l.append(di)
                                     label_dict[ents][j]['text'] = ''
@@ -55,7 +55,7 @@ def tsv_to_json_format(input_path, output_path, unknown_label):
                     annotations.append(label)
                 data_dict['annotation'] = annotations
                 annotations = []
-                if data_dict["content"]:
+                if data_dict["content"] and data_dict["annotation"]:
                     json.dump(data_dict, fp, ensure_ascii=False)
                     fp.write('\n')
                 data_dict = {}

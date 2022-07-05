@@ -2,7 +2,7 @@ import spacy
 from spacy.tokens import DocBin
 import pickle
 
-nlp = spacy.blank("fa")
+nlp = spacy.blank("ur")
 with open('ner/urdu_ner_dataset.txt', 'rb') as fp:
     training_data = pickle.load(fp)
 # the DocBin will store the example documents
