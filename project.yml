@@ -23,10 +23,14 @@ assets:
       repo: "https://github.com/UniversalDependencies/${vars.treebank}"
       branch: "master"
       path: ""
+  - url: "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ur.300.vec.gz"
+    dest: "assets/vectors.gz"
+    description: "GloVe vectors"
 
 workflows:
   all:
     - preprocess
+    - vectors
     - train
     - evaluate
     - package
@@ -51,6 +55,14 @@ commands:
       - "corpus/${vars.treebank}/dev.spacy"
       - "corpus/${vars.treebank}/test.spacy"
 
+  - name: vectors
+    help: "Convert, truncate and prune the vectors."
+    script:
+      - "python -m spacy init vectors ur assets/vectors.gz --truncate 100000 corpus/ur_vectors -n ur_glove300"
+    deps:
+      - "assets/vectors.zip"
+    outputs:
+      - "corpus/ur_vectors"
   - name: train
     help: "Train ${vars.treebank}"
     script:

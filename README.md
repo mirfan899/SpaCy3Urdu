@@ -32,7 +32,7 @@ Now convert json to spacy pickle format.
 python json_to_spacy.py -i ner/urdu_ner_dataset.json -o ner/urdu_ner_dataset.txt
 ```
 
-Now convert to spacy .spacy binray format.
+Now convert to spacy .spacy binary format.
 
 ```shell
 python json2spacy3.3.py
