@@ -60,7 +60,7 @@ commands:
     script:
       - "python -m spacy init vectors ur assets/vectors.gz --truncate 100000 corpus/ur_vectors -n ur_glove300"
     deps:
-      - "assets/vectors.zip"
+      - "assets/vectors.gz"
     outputs:
       - "corpus/ur_vectors"
   - name: train
