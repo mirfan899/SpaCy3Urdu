@@ -14,16 +14,12 @@ def tsv_to_json_format(input_path, output_path, unknown_label):
         start = 0
         for line in f:
             if line[0:len(line) - 1] != 'ہے\tO':
-                print(line)
                 word, entity = line.split('\t')
                 s += word + " "
                 entity = entity[:len(entity) - 1]
                 if entity != unknown_label:
                     if len(entity) != 1:
-                        d = {}
-                        d['text'] = word
-                        d['start'] = start
-                        d['end'] = start + len(word)
+                        d = {'text': word, 'start': start, 'end': start + len(word)}
                         try:
                             label_dict[entity].append(d)
                         except:
@@ -36,22 +32,18 @@ def tsv_to_json_format(input_path, output_path, unknown_label):
                 label_list = []
                 for ents in list(label_dict.keys()):
                     for i in range(len(label_dict[ents])):
-                        if (label_dict[ents][i]['text'] != ''):
+                        if label_dict[ents][i]['text'] != '':
                             l = [ents, label_dict[ents][i]]
                             for j in range(i + 1, len(label_dict[ents])):
-                                if (label_dict[ents][i]['text'] == label_dict[ents][j]['text']):
-                                    di = {}
-                                    di['start'] = label_dict[ents][j]['start']
-                                    di['end'] = label_dict[ents][j]['end']+1
-                                    di['text'] = label_dict[ents][i]['text']
+                                if label_dict[ents][i]['text'] == label_dict[ents][j]['text']:
+                                    di = {'start': label_dict[ents][j]['start'], 'end': label_dict[ents][j]['end'] + 1,
+                                          'text': label_dict[ents][i]['text']}
                                     l.append(di)
                                     label_dict[ents][j]['text'] = ''
                             label_list.append(l)
 
                 for entities in label_list:
-                    label = {}
-                    label['label'] = [entities[0]]
-                    label['points'] = entities[1:]
+                    label = {'label': [entities[0]], 'points': entities[1:]}
                     annotations.append(label)
                 data_dict['annotation'] = annotations
                 annotations = []
